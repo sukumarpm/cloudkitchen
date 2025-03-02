@@ -1,0 +1,18 @@
+{
+  "order": [
+    {
+      "title": "Crab masala",
+      "price": 110,
+      "qty": 1.0,
+      "url": "https://firebasestorage.googleapis.com/v0/b/cloudkitchen-b3d92.firebasestorage.app/o/images%2F1737685206394001.png?alt=media&token=7640cd6f-a9ab-43d3-8fcd-d5d54981ca4b"
+    },
+    {
+      "title": "Cake walk",
+      "price": 99,
+      "qty": 2.0,
+      "url": "https://firebasestorage.googleapis.com/v0/b/cloudkitchen-b3d92.firebasestorage.app/o/images%2F1737654222256928.png?alt=media&token=d473a9f5-6a0d-4a50-98e0-45590adaaf0c"
+    }
+  ],
+  "status": "Open",
+  "vendor": "Suku's Kitchen"
+}
