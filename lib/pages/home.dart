@@ -236,6 +236,7 @@ class _HomeState extends State<Home> {
             print('str: $str');
 
             MyOrders orderhistory = MyOrders.fromJson(str);
+            Get.find<MyController>().ordercurrent = orderhistory;
             for (var element in orderhistory.items!) {
               cart.add(Cartlists(
                   title: element.title,
@@ -833,95 +834,110 @@ class _HomeState extends State<Home> {
                       ),
                       const MySeparator(color: Colors.green),
                       addVerticalSpace(8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Your Favourites',
-                          ),
-                          // addVerticalSpace(8),
-                          SizedBox(
-                            width: _deviceWidth * .9,
-                            // height: _deviceHeight * .5,
-                            child: GridView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: filteredFoodSource.length,
-                              controller:
-                                  ScrollController(keepScrollOffset: true),
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      // childAspectRatio: 22 / 30,
-                                      // childAspectRatio: _deviceHeight / 400,
-                                      mainAxisSpacing: 1,
-                                      crossAxisSpacing: 1
-                                      // childAspectRatio: 1,
-                                      ),
-                              itemBuilder: (BuildContext context, int index) {
-                                FoodSource? fooditem =
-                                    filteredFoodSource[index];
-                                return GestureDetector(
-                                  child: SizedBox(
-                                    width: _deviceWidth / 3,
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 90,
-                                          child: Card(
-                                              semanticContainer: true,
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
+                      filteredFoodSource.isNotEmpty
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Your Favourites',
+                                ),
+                                // addVerticalSpace(8),
+                                SizedBox(
+                                  width: _deviceWidth * .9,
+                                  // height: _deviceHeight * .5,
+                                  child: GridView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: filteredFoodSource.length,
+                                    controller: ScrollController(
+                                        keepScrollOffset: true),
+                                    shrinkWrap: true,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3,
+                                            // childAspectRatio: 22 / 30,
+                                            // childAspectRatio: _deviceHeight / 400,
+                                            mainAxisSpacing: 1,
+                                            crossAxisSpacing: 1
+                                            // childAspectRatio: 1,
+                                            ),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      FoodSource? fooditem =
+                                          filteredFoodSource[index];
+                                      return GestureDetector(
+                                        child: SizedBox(
+                                          width: _deviceWidth / 3,
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                height: 90,
+                                                child: Card(
+                                                    semanticContainer: true,
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
+                                                    ),
+                                                    elevation: 5,
+                                                    margin:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    child:
+                                                        // Image.network(
+                                                        //   fooditem.imageurl1!,
+                                                        //   fit: BoxFit.cover,
+                                                        // ),
+                                                        CachedNetworkImage(
+                                                      imageUrl:
+                                                          fooditem.imageurl1!,
+                                                      imageBuilder: (context,
+                                                              imageProvider) =>
+                                                          Container(
+                                                        // width: _deviceWidth,
+                                                        // height: _deviceHeight * .28,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                          image: DecorationImage(
+                                                              image:
+                                                                  imageProvider,
+                                                              fit:
+                                                                  BoxFit.cover),
+                                                        ),
+                                                      ),
+                                                      placeholder: (context,
+                                                              url) =>
+                                                          const CircularProgressIndicator(),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          const Icon(
+                                                              Icons.error),
+                                                    )),
                                               ),
-                                              elevation: 5,
-                                              margin: const EdgeInsets.all(10),
-                                              child:
-                                                  // Image.network(
-                                                  //   fooditem.imageurl1!,
-                                                  //   fit: BoxFit.cover,
-                                                  // ),
-                                                  CachedNetworkImage(
-                                                imageUrl: fooditem.imageurl1!,
-                                                imageBuilder:
-                                                    (context, imageProvider) =>
-                                                        Container(
-                                                  // width: _deviceWidth,
-                                                  // height: _deviceHeight * .28,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.rectangle,
-                                                    image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover),
-                                                  ),
-                                                ),
-                                                placeholder: (context, url) =>
-                                                    const CircularProgressIndicator(),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        const Icon(Icons.error),
-                                              )),
+                                              Text(fooditem.itemname ?? '')
+                                            ],
+                                          ),
                                         ),
-                                        Text(fooditem.itemname ?? '')
-                                      ],
-                                    ),
+                                        onTap: () {
+                                          // print(fooditem.itemname);
+                                          Get.find<MyController>().fooddetails =
+                                              fooditem;
+                                          _navigationService
+                                              .pushNamed('/fooddetails');
+                                        },
+                                      );
+                                    },
                                   ),
-                                  onTap: () {
-                                    // print(fooditem.itemname);
-                                    Get.find<MyController>().fooddetails =
-                                        fooditem;
-                                    _navigationService
-                                        .pushNamed('/fooddetails');
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const MySeparator(color: Colors.green),
+                                ),
+                                const MySeparator(color: Colors.green),
+                              ],
+                            )
+                          : Container(),
+
                       addVerticalSpace(8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1304,7 +1320,7 @@ class _HomeState extends State<Home> {
   }
 
   void filterfavouriteitems() {
-    if (userdata['favourites'] != null || userdata['favourites'].length != 0) {
+    if (userdata['favourites'] != null && userdata['favourites'].length != 0) {
       favourites = userdata['favourites'];
       //print('favourites: $favourites');
       for (var element in listFoodSource) {

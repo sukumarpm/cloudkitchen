@@ -59,9 +59,9 @@ class _AddNewDriverState extends State<AddNewDriver> {
   }
 
   Future<void> pickimage(int imgnumber) async {
-    if (kDebugMode) {
-      print('in pickimage');
-    }
+    // if (kDebugMode) {
+    //   print('in pickimage');
+    // }
     try {
       XFile? res = await _imagePicker.pickImage(source: ImageSource.gallery);
       AlertDialog(
@@ -152,7 +152,7 @@ class _AddNewDriverState extends State<AddNewDriver> {
   }
 
   Future<void> finddriver(String? phone) async {
-    print('phone:$phone');
+    //print('phone:$phone');
     final QuerySnapshot resulta = await _firebase
         .collection("drivers")
         .where("driverphone", isEqualTo: phone)
@@ -162,7 +162,7 @@ class _AddNewDriverState extends State<AddNewDriver> {
       return e.data();
     }).toList();
     if (kDebugMode) {
-      print('data:${data.toString()}');
+      //print('data:${data.toString()}');
     }
 
     // final List<DocumentSnapshot> documents = resulta.docs;
@@ -183,7 +183,7 @@ class _AddNewDriverState extends State<AddNewDriver> {
       return e.data();
     }).toList();
     if (kDebugMode) {
-      print('data:${data.toString()}');
+      //print('data:${data.toString()}');
     }
 
     // final List<DocumentSnapshot> documents = resulta.docs;
@@ -297,7 +297,7 @@ class _AddNewDriverState extends State<AddNewDriver> {
                                 child: const Icon(Icons.search_sharp, size: 45),
                                 onTap: () async {
                                   _getuseritemkey.currentState!.save();
-                                  print('_itemname:$_itemname');
+                                  //print('_itemname:$_itemname');
                                   await finddriver(_itemname);
 
                                   if (!driverexisting) {
@@ -941,7 +941,7 @@ class _AddNewDriverState extends State<AddNewDriver> {
                                       _vehiclemodel != "" &&
                                       _vehiclemodel != null;
                                   if (kDebugMode) {
-                                    print(
+                                 print(
                                         "====== Add New FOOD ITEM DETAILS =====");
                                     print("driverphone: $driverphone");
                                     print("drivername: $drivername");

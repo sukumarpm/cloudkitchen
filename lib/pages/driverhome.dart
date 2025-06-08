@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen_2/pages/HorizontalCouponExample2.dart';
 import 'package:cloud_kitchen_2/pages/cartlists.dart';
+import 'package:cloud_kitchen_2/pages/driverclass.dart';
 import 'package:cloud_kitchen_2/pages/exampleapppage.dart';
 import 'package:cloud_kitchen_2/pages/foodclass.dart';
 import 'package:cloud_kitchen_2/pages/fooddetails.dart';
@@ -51,6 +52,8 @@ class _DriverHomeState extends State<DriverHome> {
   List<orders.MyOrders> listorderhistory = [];
   List<orders.MyOrders> listordercurrent = [];
   List<orders.MyOrders> listordercancelled = [];
+  List<orders.MyOrders> listmyorders = [];
+  List<Driver> listdrivers = [];
   late bool flagtotord = false;
   late bool flagearnings = false;
   late bool flagtodayord = true;
@@ -141,6 +144,8 @@ class _DriverHomeState extends State<DriverHome> {
     fetchcancelorder();
     filterfavouriteitems();
     totalord();
+    fetchdrivers();
+    fetchmyorder();
   }
 
   Future<void> fetchorderhistory() async {
@@ -248,6 +253,80 @@ class _DriverHomeState extends State<DriverHome> {
     );
     //print('listordercancelled: ${listordercancelled.length}');
     Get.find<MyController>().ordercanceledadmin = listordercancelled;
+  }
+
+  Future<void> fetchmyorder() async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    // final String formatted = formatter.format(now);
+    const String formatted = '2025-02-01';
+    print(userdata['phone_number']);
+
+    FirebaseFirestore.instance
+        .collection('orders')
+        // .where("user_id", isEqualTo: userdata['phone_number'].toString())
+        .where("driver_phone", isEqualTo: userdata['phone_number'])
+        .orderBy("status")
+        .get()
+        .then(
+      (querySnapshot) {
+        //print('length: ${querySnapshot.size}');
+        for (var docSnapshot in querySnapshot.docs) {
+          final str = docSnapshot.data();
+          //print('str: $str');
+
+          orders.MyOrders listorders = orders.MyOrders.fromJson(str);
+          listmyorders.add(listorders);
+
+          // print("values: ${orderhistory.items}");
+          // MyOrders myorder = MyOrders.fromJson(docSnapshot as Map<String, dynamic>);
+
+          // listFoodSource.add(foodsource);
+          // for (var element in orderhistory.items!) {
+          //   print('order: ${element.price}');
+          // }
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+    //print('listordercancelled: ${listordercancelled.length}');
+    Get.find<MyController>().allmyorders = listmyorders;
+  }
+
+  Future<void> fetchdrivers() async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    // final String formatted = formatter.format(now);
+    // const String formatted = '2025-02-01';
+
+    FirebaseFirestore.instance
+        .collection('drivers')
+        // .where("user_id", isEqualTo: userdata['phone_number'].toString())
+        // .where("active", isEqualTo: true)
+        .get()
+        .then(
+      (querySnapshot) {
+        //print('length: ${querySnapshot.size}');
+        for (var docSnapshot in querySnapshot.docs) {
+          final str = docSnapshot.data();
+          print('str: $str');
+
+          Driver listdriversactive = Driver.fromJson(str);
+          listdrivers.add(listdriversactive);
+
+          print("listdrivers length: ${listdrivers.length}");
+          // MyOrders myorder = MyOrders.fromJson(docSnapshot as Map<String, dynamic>);
+
+          // listFoodSource.add(foodsource);
+          // for (var element in orderhistory.items!) {
+          //   print('order: ${element.price}');
+          // }
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+    //print('listordercancelled: ${listordercancelled.length}');
+    Get.find<MyController>().driveractiveadmin = listdrivers;
   }
 
   Future totalord() async {
@@ -401,6 +480,17 @@ class _DriverHomeState extends State<DriverHome> {
                           ),
                           Row(
                             children: [
+                              addHorizontalSpace(16),
+                              GestureDetector(
+                                child: Icon(
+                                  Icons.delivery_dining_outlined,
+                                  size: 35,
+                                  color: Theme.of(context).colorScheme.tertiary,
+                                ),
+                                onTap: () {
+                                  _navigationService.pushNamed("/mydeliveries");
+                                },
+                              ),
                               addHorizontalSpace(16),
                               GestureDetector(
                                 child: Icon(

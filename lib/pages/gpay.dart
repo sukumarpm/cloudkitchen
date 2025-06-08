@@ -25,6 +25,7 @@ import 'package:cloud_kitchen_2/services/payment_configuration.dart'
     as payment_configurations;
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pay/pay.dart';
 
@@ -123,7 +124,7 @@ class _PaySampleAppState extends State<PaySampleApp> {
         .collection('orders')
         // .doc(userdata['phone_number'].toString())
         // .collection(formatted)
-        .doc()
+        .doc(orderId)
         .set(
       {
         "items": jsonMap,
@@ -132,7 +133,20 @@ class _PaySampleAppState extends State<PaySampleApp> {
         "order_id": orderId,
         "order_date": formatted,
         "vendor": vendorSource.name,
-        "total_amount": double.parse(total)
+        "total_amount": double.parse(total),
+        "driver_phone": ''
+      },
+    );
+    databaseReference
+        .collection('orderlocation')
+        // .doc(userdata['phone_number'].toString())
+        // .collection(formatted)
+        .doc(orderId)
+        .set(
+      {
+        "latitude": c.deliveryDetails['latitude'],
+        "longitude": c.deliveryDetails['longitude'],
+        "order_id": orderId,
       },
     );
 

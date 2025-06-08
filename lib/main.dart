@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen_2/pages/city.dart';
+import 'package:cloud_kitchen_2/pages/feedback.dart';
 import 'package:cloud_kitchen_2/pages/foodclass.dart';
 import 'package:cloud_kitchen_2/pages/vendorclass.dart';
 import 'package:cloud_kitchen_2/services/auth_service.dart';
@@ -27,6 +28,7 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
         create: (context) => ThemeProvider(),
+        // child: const MaterialApp(home: Rating())),
         child: const MaterialApp(home: OnBoard())),
   );
 }
@@ -47,6 +49,7 @@ Future<void> setupFirebase() async {
 class MyApp1 extends StatelessWidget {
   late AuthService _auth;
   late NavigationService _navigationService;
+  final MyController c = Get.put(MyController());
 
   MyApp1({super.key}) {
     final GetIt getIt = GetIt.instance;
@@ -57,18 +60,24 @@ class MyApp1 extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // if (kDebugMode) {
-    //   print('_auth.user:${_auth.user}');
-    // }
+    if (kDebugMode) {
+      print(' c.isDrive:${c.isDriver}');
+    }
     return GetMaterialApp(
       navigatorKey: _navigationService.navigatorKey,
       title: 'Flutter Demo',
       theme: Provider.of<ThemeProvider>(context).themeData,
-      initialRoute: _auth.user != null ? "/home" : "/login",
-      // initialRoute: _auth.user != null ? "/home" : "/dropdown",
+      initialRoute: _auth.user != null
+          ? c.isAdmin == true.obs
+              ? "/adminhome"
+              : c.isDriver == true.obs
+                  ? "/home"
+                  : "/driverhome"
+          : "/login",
+      // initialRoute: _auth.user != null ? "/mydeliveries" : "/dropdown",
       // initialRoute: _auth.user != null ? "/home" : "/imageup",
       // initialRoute: _auth.user != null ? "/register" : "/fmlogo",
-      // initialRoute: "/login",
+      // initialRoute: "/livetracking",
       routes: _navigationService.routes,
     );
   }

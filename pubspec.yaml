@@ -36,14 +36,14 @@ dependencies:
   cupertino_icons: ^1.0.6
   get: ^4.6.6
   get_it: ^8.0.2
-  provider:
+  provider: ^6.1.5
   flutter_image_slideshow: ^0.1.6
   google_fonts: ^6.2.1
   flutter_otp_text_field:
   cloud_firestore:
   firebase_auth:
   firebase_core:
-  intl: ^0.19.0
+  intl:
   firebase_phone_auth_handler: ^1.0.8
   dotted_border:
   item_selector: ^0.2.0
@@ -83,8 +83,14 @@ dependencies:
   coupon_uikit:
   loader_overlay:
   toggle_list:
-  dropdown_flutter:
+  dropdown_flutter: ^1.0.0
   toggle_switch:
+  flutter_rating_bar:
+  another_stepper:
+  swipe_to:
+  swipeable_button_view:
+  flutter_polyline_points: ^2.1.0
+  http:
 
 dev_dependencies:
   flutter_test:
@@ -114,7 +120,7 @@ flutter:
     - lib/assets/images/user/logo/
     - lib/assets/images/user/logo/login screen fb,x,apple/
     - lib/assets/images/user/icones/
-    - lib/assets/images/user/profile icones/
+    - lib/assets/images/user/profileicones/
     - lib/assets/images/admin/icones/
     - lib/assets/images/admin/navigation bar/
     - lib/assets/images/food/

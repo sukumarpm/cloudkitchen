@@ -199,6 +199,8 @@ class _LoginState extends State<Login> {
                                           true.obs;
                                       Get.find<MyController>().admindata =
                                           adminData;
+                                    } else {
+                                      isAdmin = false;
                                     }
                                     final QuerySnapshot resultb =
                                         await _firebase

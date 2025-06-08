@@ -41,6 +41,7 @@ class _OrderSummaryState extends State<OrderSummary> {
   final String _selectedValuesJson = 'Nothing to show';
   List<VendorSource> listVendorSource = [];
   late List<Ingredient> _selectedIngredients;
+  Map<dynamic, dynamic> deliveryDetails = {};
   late NavigationService _navigationService;
   final GetIt _getIt = GetIt.instance;
   final MyController c = Get.put(MyController());
@@ -50,7 +51,7 @@ class _OrderSummaryState extends State<OrderSummary> {
   double deliverycharge = 20.00;
   double promodiscount = 5.00;
   late GoogleMapController mapController;
-  late LatLng _currentPosition;
+  late LatLng _currentPosition = const LatLng(0, 0);
   late LatLng _userPosition;
   late bool _isLoading = true;
   late LatLng location;
@@ -68,20 +69,20 @@ class _OrderSummaryState extends State<OrderSummary> {
     _selectedIngredients = [];
     listCarts = c.fullcartList;
     listVendorSource = c.allvendordata;
-    late VendorSource vendorSource;
-    for (var element in listVendorSource) {
-      // if (element['active']) {
-      vendorSource = element;
-      if (kDebugMode) {
-        print('vendorSource.active: ${vendorSource.active}');
-        print('vendorSource.active: ${vendorSource.address}');
-        print('vendorSource.active: ${vendorSource.discount}');
-        print('vendorSource.active: ${vendorSource.location}');
-        print('vendorSource.active: ${vendorSource.name}');
-      }
-      // }
-    }
-    getLocation();
+    // late VendorSource vendorSource;
+    // for (var element in listVendorSource) {
+    //   // if (element['active']) {
+    //   vendorSource = element;
+    //   // if (kDebugMode) {
+    //   //   print('vendorSource.active: ${vendorSource.active}');
+    //   //   print('vendorSource.active: ${vendorSource.address}');
+    //   //   print('vendorSource.active: ${vendorSource.discount}');
+    //   //   print('vendorSource.active: ${vendorSource.location}');
+    //   //   print('vendorSource.active: ${vendorSource.name}');
+    //   // }
+    //   // }
+    // }
+    //getLocation();
     setResults('');
     List address = c.profiledata['my_addresses'];
     List locations = c.profiledata['my_locations'];
@@ -106,23 +107,6 @@ class _OrderSummaryState extends State<OrderSummary> {
     }
   }
 
-  getLocation() async {
-    LocationPermission permission;
-    permission = await Geolocator.requestPermission();
-
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    double lat = position.latitude;
-    double long = position.longitude;
-
-    location = LatLng(lat, long);
-
-    setState(() {
-      _currentPosition = location;
-      _isLoading = false;
-    });
-  }
-
   Future<void> openMap(double latitude, double longitude) async {
     String googleUrl =
         'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
@@ -143,12 +127,32 @@ class _OrderSummaryState extends State<OrderSummary> {
     mapController = controller;
   }
 
+  getLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.requestPermission();
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    double lat = position.latitude;
+    double long = position.longitude;
+
+    location = LatLng(lat, long);
+    print('${location.latitude}');
+    print('${location.longitude}');
+    setState(() {
+      _currentPosition = location;
+      deliveryDetails['latitude'] = _currentPosition.latitude;
+      deliveryDetails['longitude'] = _currentPosition.longitude;
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
     final VendorSource vendorSource = listVendorSource[0];
-    _currentPosition = LatLng(double.parse(vendorSource.location[0]),
+    _userPosition = LatLng(double.parse(vendorSource.location[0]),
         double.parse(vendorSource.location[1]));
 
     return Scaffold(
@@ -455,8 +459,47 @@ class _OrderSummaryState extends State<OrderSummary> {
                                                               'Drag to update the location')),
                                                 },
                                               )
-                                            : const Text(
-                                                'User location unavailable'),
+                                            : SizedBox(
+                                                width: _deviceWidth * .7,
+                                                height: 30,
+                                                child: ElevatedButton(
+                                                    style: ButtonStyle(
+                                                        backgroundColor:
+                                                            WidgetStateProperty.all<
+                                                                    Color>(
+                                                                Colors.white),
+                                                        foregroundColor:
+                                                            WidgetStateProperty.all<
+                                                                    Color>(
+                                                                Theme.of(context)
+                                                                    .colorScheme
+                                                                    .tertiary),
+                                                        overlayColor:
+                                                            WidgetStateProperty
+                                                                .all<Color>(
+                                                                    Colors.white)),
+                                                    onPressed: () {
+                                                      getLocation();
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Image.asset(
+                                                            'lib/assets/images/user/profileicones/location.png',
+                                                            fit: BoxFit
+                                                                .fitWidth),
+                                                        addHorizontalSpace(20),
+                                                        const Text(
+                                                          'Use Current Location',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.green),
+                                                        ),
+                                                      ],
+                                                    )),
+                                              ),
                                       ),
                                     ),
                                   ],
@@ -530,7 +573,53 @@ class _OrderSummaryState extends State<OrderSummary> {
                                 ),
                         ],
                       ),
-
+                      _currentPosition.latitude == 0
+                          ? Container()
+                          : Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * .2,
+                                width: double.infinity,
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(color: Color(0xFFDFDFDF)),
+                                    left: BorderSide(color: Color(0xFFDFDFDF)),
+                                    right: BorderSide(color: Color(0xFF7F7F7F)),
+                                    bottom:
+                                        BorderSide(color: Color(0xFF7F7F7F)),
+                                  ),
+                                ),
+                                child: GoogleMap(
+                                  onMapCreated: _onMapCreated,
+                                  initialCameraPosition: CameraPosition(
+                                    target: _currentPosition,
+                                    zoom: 16.0,
+                                  ),
+                                  markers: {
+                                    Marker(
+                                        markerId:
+                                            const MarkerId('Your Location'),
+                                        position: _currentPosition,
+                                        onTap: () {
+                                          debugPrint('Tapped');
+                                        },
+                                        draggable: true,
+                                        onDragEnd: ((LatLng newPosition) {
+                                          print('${newPosition.latitude}');
+                                          print('${newPosition.longitude}');
+                                        }),
+                                        onDrag: (value) {
+                                          print('Dragging:$value');
+                                        },
+                                        infoWindow: const InfoWindow(
+                                            title:
+                                                'Drag to update the location',
+                                            snippet:
+                                                'Drag to update the location')),
+                                  },
+                                ),
+                              ),
+                            ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -620,8 +709,11 @@ class _OrderSummaryState extends State<OrderSummary> {
                         child: ElevatedButton(
                             child: const Text("CONFIRM & PAY NOW"),
                             onPressed: () {
+                              print(deliveryDetails);
                               Get.find<MyController>().finalprice =
                                   total.toString();
+                              Get.find<MyController>().deliveryDetails =
+                                  deliveryDetails;
                               _navigationService.pushNamed("/gpay");
                             }),
                       ),

@@ -582,6 +582,7 @@ class _AdminHomeState extends State<AdminHome> {
   List<orders.MyOrders> listorderhistory = [];
   List<orders.MyOrders> listordercurrent = [];
   List<orders.MyOrders> listordercancelled = [];
+  List<orders.MyOrders> listmyorders = [];
   List<Driver> listdrivers = [];
   late bool flagtotord = false;
   late bool flagearnings = false;
@@ -674,6 +675,7 @@ class _AdminHomeState extends State<AdminHome> {
     filterfavouriteitems();
     totalord();
     fetchdrivers();
+    fetchmyorder();
   }
 
   Future<void> fetchorderhistory() async {
@@ -782,6 +784,44 @@ class _AdminHomeState extends State<AdminHome> {
     );
     //print('listordercancelled: ${listordercancelled.length}');
     Get.find<MyController>().driveractiveadmin = listdrivers;
+  }
+
+  Future<void> fetchmyorder() async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    // final String formatted = formatter.format(now);
+    const String formatted = '2025-02-01';
+    print(userdata['phone_number']);
+
+    FirebaseFirestore.instance
+        .collection('orders')
+        // .where("user_id", isEqualTo: userdata['phone_number'].toString())
+        .where("driver_phone", isEqualTo: userdata['phone_number'])
+        .orderBy("status")
+        .get()
+        .then(
+      (querySnapshot) {
+        //print('length: ${querySnapshot.size}');
+        for (var docSnapshot in querySnapshot.docs) {
+          final str = docSnapshot.data();
+          //print('str: $str');
+
+          orders.MyOrders listorders = orders.MyOrders.fromJson(str);
+          listmyorders.add(listorders);
+
+          // print("values: ${orderhistory.items}");
+          // MyOrders myorder = MyOrders.fromJson(docSnapshot as Map<String, dynamic>);
+
+          // listFoodSource.add(foodsource);
+          // for (var element in orderhistory.items!) {
+          //   print('order: ${element.price}');
+          // }
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+    //print('listordercancelled: ${listordercancelled.length}');
+    Get.find<MyController>().allmyorders = listmyorders;
   }
 
   Future<void> fetchcancelorder() async {
@@ -971,6 +1011,17 @@ class _AdminHomeState extends State<AdminHome> {
                           ),
                           Row(
                             children: [
+                              addHorizontalSpace(16),
+                              GestureDetector(
+                                child: Icon(
+                                  Icons.delivery_dining_outlined,
+                                  size: 35,
+                                  color: Theme.of(context).colorScheme.tertiary,
+                                ),
+                                onTap: () {
+                                  _navigationService.pushNamed("/mydeliveries");
+                                },
+                              ),
                               addHorizontalSpace(16),
                               GestureDetector(
                                 child: Icon(
@@ -1691,13 +1742,31 @@ class _AdminHomeState extends State<AdminHome> {
                                                 children: [
                                                   TextButton(
                                                     onPressed: () {
-                                                      Get.find<MyController>()
-                                                              .ordercurrent =
-                                                          listordercurrent[
-                                                              index];
-                                                      _navigationService
-                                                          .pushNamed(
-                                                              '/orderviewadmin');
+                                                      if (listdrivers.isEmpty) {
+                                                        if (context.mounted) {
+                                                          /// statements after async gap without warning
+                                                          showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (BuildContext
+                                                                      context) {
+                                                                return const AlertDialog(
+                                                                  title: Text(
+                                                                      'Oops!'),
+                                                                  content: Text(
+                                                                      'There are no drivers to choose. Please add drivers.'),
+                                                                );
+                                                              });
+                                                        }
+                                                      } else {
+                                                        Get.find<MyController>()
+                                                                .ordercurrent =
+                                                            listordercurrent[
+                                                                index];
+                                                        _navigationService
+                                                            .pushNamed(
+                                                                '/orderviewadmin');
+                                                      }
                                                     },
                                                     child: const Column(
                                                       children: [

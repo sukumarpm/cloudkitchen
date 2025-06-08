@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen_2/pages/cartlists.dart';
 import 'package:cloud_kitchen_2/pages/driverclass.dart';
 import 'package:cloud_kitchen_2/pages/foodclass.dart';
@@ -48,6 +49,7 @@ class _OrderViewAdminState extends State<OrderViewAdmin> {
   final String _selectedValuesJson = 'Nothing to show';
   List<VendorSource> listVendorSource = [];
   List<Driver> listdrivers = [];
+  late Map<dynamic, dynamic> userdata;
   late List<Ingredient> _selectedIngredients;
   late NavigationService _navigationService;
   final GetIt _getIt = GetIt.instance;
@@ -57,7 +59,8 @@ class _OrderViewAdminState extends State<OrderViewAdmin> {
   double total = 0;
   double deliverycharge = 20.00;
   double promodiscount = 5.00;
-  late String _mySelection = '';
+  late String _oldDriver = '';
+  late String _newDriver = '';
   late GoogleMapController mapController;
   late LatLng _currentPosition;
   late LatLng _userPosition;
@@ -114,19 +117,22 @@ class _OrderViewAdminState extends State<OrderViewAdmin> {
     listCarts = c.ordercurrent;
     listVendorSource = c.allvendordata;
     listdrivers = c.driveractiveadmin;
-    late VendorSource vendorSource;
-    for (var element in listVendorSource) {
-      // if (element['active']) {
-      vendorSource = element;
-      if (kDebugMode) {
-        print('vendorSource.active: ${vendorSource.active}');
-        print('vendorSource.active: ${vendorSource.address}');
-        print('vendorSource.active: ${vendorSource.discount}');
-        print('vendorSource.active: ${vendorSource.location}');
-        print('vendorSource.active: ${vendorSource.name}');
-      }
-      // }
-    }
+    userdata = c.profiledata;
+    _oldDriver = listCarts.driver_phone!.isEmpty ? '' : listCarts.driver_phone!;
+    print(' A_oldDriver:$_oldDriver END');
+    // late VendorSource vendorSource;
+    // for (var element in listVendorSource) {
+    //   // if (element['active']) {
+    //   vendorSource = element;
+    //   // if (kDebugMode) {
+    //   //   print('vendorSource.active: ${vendorSource.active}');
+    //   //   print('vendorSource.active: ${vendorSource.address}');
+    //   //   print('vendorSource.active: ${vendorSource.discount}');
+    //   //   print('vendorSource.active: ${vendorSource.location}');
+    //   //   print('vendorSource.active: ${vendorSource.name}');
+    //   // }
+    //   // }
+    // }
     getLocation();
     setResults('');
     List address = c.profiledata['my_addresses'];
@@ -228,7 +234,7 @@ class _OrderViewAdminState extends State<OrderViewAdmin> {
                                 },
                               ),
                               addHorizontalSpace(15),
-                              const Text('Current Order'),
+                              const Text('Admin>Current Order'),
                             ],
                           ),
                         ],
@@ -547,12 +553,14 @@ class _OrderViewAdminState extends State<OrderViewAdmin> {
                                       ),
                                     );
                                   }).toList(),
-                                  value: _mySelection.isNotEmpty
-                                      ? _mySelection
-                                      : null,
+                                  value: _newDriver != ''
+                                      ? _newDriver
+                                      : _oldDriver != ''
+                                          ? _oldDriver
+                                          : null,
                                   onChanged: (value) {
                                     setState(() {
-                                      _mySelection = value.toString();
+                                      _newDriver = value.toString();
                                     });
                                   },
                                 ),
@@ -708,116 +716,15 @@ class _OrderViewAdminState extends State<OrderViewAdmin> {
                                     ),
                             ],
                           ),
-
                           const MySeparator(
                             height: 1,
                             color: Colors.black45,
                             dashwidth: 2,
                           ),
                           addVerticalSpace(5),
-                          // SizedBox(
-                          //   height: 150,
-                          //   child: ListView.separated(
-                          //     // <-- SEE HERE
-                          //     itemCount: categoryImage.length,
-                          //     itemBuilder: (context, index) {
-                          //       return ListTile(
-                          //         // leading: CircleAvatar(
-                          //         //   backgroundColor: const Color.fromARGB(255, 87, 87, 87),
-                          //         //   radius: 26,
-                          //         //   child: Text("Rs.${categoryImage.getCategory(index)}",
-                          //         //       style: const TextStyle(
-                          //         //           fontSize: 12, color: Colors.yellow)),
-                          //         // ),
-                          //         leading: ClipOval(
-                          //           child:
-                          //               // (categoryImage.getImage(index) != "")
-                          //               //     ?
-                          //               // Image.network(
-                          //               //     categoryImage.getImage(index),
-                          //               //     width: 90,
-                          //               //     height: 70,
-                          //               //     fit: BoxFit.cover,
-                          //               //   )
-
-                          //               CachedNetworkImage(
-                          //             imageUrl: categoryImage[index]['url'],
-                          //             imageBuilder: (context, imageProvider) =>
-                          //                 Container(
-                          //               width: 80.0,
-                          //               height: 100.0,
-                          //               decoration: BoxDecoration(
-                          //                 shape: BoxShape.circle,
-                          //                 image: DecorationImage(
-                          //                     image: imageProvider,
-                          //                     fit: BoxFit.cover),
-                          //               ),
-                          //             ),
-                          //             placeholder: (context, url) =>
-                          //                 const CircularProgressIndicator(),
-                          //             errorWidget: (context, url, error) =>
-                          //                 const Icon(Icons.error),
-                          //           ),
-                          //           // : Image.asset(
-                          //           //     'lib/assets/Images/mic1.png',
-                          //           //   ),
-                          //         ),
-                          //         title: Text(categoryImage[index]['name']),
-                          //         subtitle: Text(categoryImage[index]['phone']),
-                          //         trailing: Row(
-                          //           mainAxisAlignment: MainAxisAlignment.end,
-                          //           mainAxisSize: MainAxisSize.min,
-                          //           children: [
-                          //             GestureDetector(
-                          //               child: const Text('ASSIGN'),
-                          //               onTap: () {
-                          //                 Driver driverinfo = Driver(
-                          //                     name: categoryImage[index]
-                          //                         ['name'],
-                          //                     phone: categoryImage[index]
-                          //                         ['phone'],
-                          //                     bikenum: categoryImage[index]
-                          //                         ['bikenum'],
-                          //                     url: categoryImage[index]['url']);
-                          //                 Get.find<MyController>()
-                          //                     .driverdetails = driverinfo;
-                          //               },
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       );
-                          //     },
-                          //     separatorBuilder: (context, index) {
-                          //       // <-- SEE HERE
-                          //       return const MySeparator(color: Colors.green);
-                          //     },
-                          //   ),
-                          // ),
                         ],
                       ),
                       addVerticalSpace(8),
-
-                      // InlineChoice<String>.single(
-                      //   clearable: true,
-                      //   value: selectedValue,
-                      //   onChanged: setSelectedValue,
-                      //   itemCount: choices.length,
-                      //   itemBuilder: (state, i) {
-                      //     return ChoiceChip(
-                      //       selected: state.selected(choices[i]),
-                      //       onSelected: state.onSelected(choices[i]),
-                      //       label: Text(choices[i]),
-                      //     );
-                      //   },
-                      //   listBuilder: ChoiceList.createWrapped(
-                      //     spacing: 10,
-                      //     runSpacing: 10,
-                      //     padding: const EdgeInsets.symmetric(
-                      //       horizontal: 20,
-                      //       vertical: 25,
-                      //     ),
-                      //   ),
-                      // ),
 
                       addVerticalSpace(16),
                       // SizedBox(
@@ -833,25 +740,64 @@ class _OrderViewAdminState extends State<OrderViewAdmin> {
                       SizedBox(
                         width: _deviceWidth * .8,
                         child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all<Color>(
-                                    listCarts.status == 'Open'
-                                        ? Colors.green
-                                        : Colors.grey)),
-                            onPressed: listCarts.status == 'Open'
-                                ? () {
-                                    Get.find<MyController>().finalprice =
-                                        total.toString();
+                          style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all<Color>(
+                                  listCarts.status == 'Open'
+                                      ? Colors.green
+                                      : Colors.grey)),
+                          onPressed: listCarts.status != 'Open'
+                              ? () {
+                                  Get.find<MyController>().finalprice =
+                                      total.toString();
+                                  _navigationService.pushNamed("/adminhome");
+                                }
+                              : () {
+                                  if (_newDriver != '' &&
+                                      _newDriver != _oldDriver) {
+                                    print('_newDriver 1:$_newDriver');
+                                    FirebaseFirestore.instance
+                                        .collection('orders')
+                                        .doc(listCarts.order_id)
+                                        .update(
+                                      {"driver_phone": _newDriver},
+                                    );
+                                    Get.showSnackbar(
+                                      const GetSnackBar(
+                                        title: 'Info',
+                                        message:
+                                            'Order has been assigned to a Driver',
+                                        icon: Icon(Icons.refresh),
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
                                     _navigationService.pushNamed("/adminhome");
+                                  } else if (_oldDriver == '' &&
+                                      _newDriver == '') {
+                                    print('_oldDriver 2:$_oldDriver');
+                                    if (context.mounted) {
+                                      /// statements after async gap without warning
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return const AlertDialog(
+                                              title: Text('Oops!'),
+                                              content: Text(
+                                                  'Please choose the driver.'),
+                                            );
+                                          });
+                                    }
+                                  } else {
+                                    print('_oldDriver 2:$_oldDriver');
                                   }
-                                : () {},
-                            child: Text(
-                              "CONFIRM",
-                              style: TextStyle(
-                                  color: listCarts.status == 'Open'
-                                      ? Colors.black
-                                      : Colors.white),
-                            )),
+                                },
+                          child: Text(
+                            "CONFIRM",
+                            style: TextStyle(
+                                color: listCarts.status == 'Open'
+                                    ? Colors.black
+                                    : Colors.white),
+                          ),
+                        ),
                       ),
                     ],
                   ),

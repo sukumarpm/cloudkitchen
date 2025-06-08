@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_kitchen_2/pages/cartlists.dart';
 import 'package:cloud_kitchen_2/pages/driverclass.dart';
 import 'package:cloud_kitchen_2/pages/foodclass.dart';
@@ -48,6 +49,7 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
   final String _selectedValuesJson = 'Nothing to show';
   List<VendorSource> listVendorSource = [];
   late List<Ingredient> _selectedIngredients;
+  List<Driver> listdrivers = [];
   late NavigationService _navigationService;
   final GetIt _getIt = GetIt.instance;
   final MyController c = Get.put(MyController());
@@ -56,7 +58,7 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
   double total = 0;
   double deliverycharge = 20.00;
   double promodiscount = 5.00;
-  late final String _mySelection = '';
+  late String _mySelection = '';
   late GoogleMapController mapController;
   late LatLng _currentPosition;
   late LatLng _userPosition;
@@ -65,6 +67,7 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
   late String userWork;
   late bool nouserlocation = true;
   late bool cartshow = false;
+  late Map<dynamic, dynamic> userdata;
   List categoryImage = [
     {
       'url':
@@ -111,20 +114,23 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
     _navigationService = _getIt.get<NavigationService>();
     _selectedIngredients = [];
     listCarts = c.ordercurrent;
+    listdrivers = c.driveractiveadmin;
     listVendorSource = c.allvendordata;
-    late VendorSource vendorSource;
-    for (var element in listVendorSource) {
-      // if (element['active']) {
-      vendorSource = element;
-      if (kDebugMode) {
-        print('vendorSource.active: ${vendorSource.active}');
-        print('vendorSource.active: ${vendorSource.address}');
-        print('vendorSource.active: ${vendorSource.discount}');
-        print('vendorSource.active: ${vendorSource.location}');
-        print('vendorSource.active: ${vendorSource.name}');
-      }
-      // }
-    }
+    userdata = c.profiledata;
+    _mySelection = listCarts.driver_phone!;
+    // late VendorSource vendorSource;
+    // for (var element in listVendorSource) {
+    //   // if (element['active']) {
+    //   vendorSource = element;
+    //   if (kDebugMode) {
+    //     print('vendorSource.active: ${vendorSource.active}');
+    //     print('vendorSource.active: ${vendorSource.address}');
+    //     print('vendorSource.active: ${vendorSource.discount}');
+    //     print('vendorSource.active: ${vendorSource.location}');
+    //     print('vendorSource.active: ${vendorSource.name}');
+    //   }
+    //   // }
+    // }
     getLocation();
     setResults('');
     List address = c.profiledata['my_addresses'];
@@ -183,7 +189,7 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
     super.dispose();
   }
 
-  void _onMapCreated(GoogleMapController controller) {
+  void onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
@@ -226,7 +232,7 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
                                 },
                               ),
                               addHorizontalSpace(15),
-                              const Text('Current Order'),
+                              const Text('Driver>Current Order'),
                             ],
                           ),
                         ],
@@ -495,7 +501,7 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
                                     ],
                                   ),
                                 ),
-                                onExpansionChanged: _expansionChangedCallback,
+                                onExpansionChanged: expansionChangedCallback,
                                 headerDecoration: const BoxDecoration(
                                   color: Colors.white,
                                   borderRadius:
@@ -515,52 +521,48 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          // Text(
-                          //   'DELIVERY BOY',
-                          //   style: GoogleFonts.sen(
-                          //       textStyle: const TextStyle(
-                          //           color: Color.fromARGB(255, 9, 0, 0),
-                          //           fontSize: 14)),
-                          // ),
-                          // addVerticalSpace(15),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //   children: [
-                          //     const Text('Drivers'),
-                          //     addHorizontalSpace(8),
-                          //     Container(
-                          //       decoration: BoxDecoration(
-                          //           color: Colors.green.shade200,
-                          //           borderRadius: const BorderRadius.all(
-                          //               Radius.circular(5))),
-                          //       child: DropdownButton(
-                          //         focusColor: Colors.black26,
-                          //         dropdownColor: Colors.green.shade200,
-                          //         items: categoryImage.map((value) {
-                          //           return DropdownMenuItem(
-                          //             value: value['name'],
-                          //             child: Text(
-                          //               value['name'] +
-                          //                   '(' +
-                          //                   value['phone'] +
-                          //                   ')',
-                          //               style: const TextStyle(),
-                          //             ),
-                          //           );
-                          //         }).toList(),
-                          //         value: _mySelection.isNotEmpty
-                          //             ? _mySelection
-                          //             : null,
-                          //         onChanged: (value) {
-                          //           setState(() {
-                          //             _mySelection = value.toString();
-                          //           });
-                          //         },
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          // addVerticalSpace(5),
+                          Text(
+                            'DELIVERY BOY',
+                            style: GoogleFonts.sen(
+                                textStyle: const TextStyle(
+                                    color: Color.fromARGB(255, 9, 0, 0),
+                                    fontSize: 14)),
+                          ),
+                          addVerticalSpace(15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const Text('Drivers'),
+                              addHorizontalSpace(8),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.green.shade200,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5))),
+                                child: DropdownButton(
+                                  focusColor: Colors.black26,
+                                  dropdownColor: Colors.green.shade200,
+                                  items: listdrivers.map((value) {
+                                    return DropdownMenuItem(
+                                      value: value.phone,
+                                      child: Text(
+                                        '${value.name}(${value.phone})',
+                                        style: const TextStyle(),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  value:
+                                      _mySelection != '' ? _mySelection : null,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _mySelection = value.toString();
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          addVerticalSpace(5),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -671,7 +673,7 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
                                               ),
                                             ),
                                             child: GoogleMap(
-                                              onMapCreated: _onMapCreated,
+                                              onMapCreated: onMapCreated,
                                               initialCameraPosition:
                                                   CameraPosition(
                                                 target: _currentPosition,
@@ -836,12 +838,42 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
                                     _navigationService.pushNamed("/driverhome");
                                   }
                                 : () {},
-                            child: Text(
-                              "ACCEPT",
-                              style: TextStyle(
-                                  color: listCarts.status == 'Open'
-                                      ? Colors.black
-                                      : Colors.white),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (_mySelection != '') {
+                                  print('_mySelection:$_mySelection');
+                                  FirebaseFirestore.instance
+                                      .collection('orders')
+                                      .doc(listCarts.order_id)
+                                      .update(
+                                    {
+                                      "driver_phone": _mySelection,
+                                      "status": 'Accepted'
+                                    },
+                                  );
+                                  _navigationService.pushNamed("/livetracking");
+                                } else {
+                                  if (context.mounted) {
+                                    /// statements after async gap without warning
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AlertDialog(
+                                            title: Text('Oops!'),
+                                            content: Text(
+                                                'Please choose the driver.'),
+                                          );
+                                        });
+                                  }
+                                }
+                              },
+                              child: Text(
+                                "ACCEPT",
+                                style: TextStyle(
+                                    color: listCarts.status == 'Open'
+                                        ? Colors.black
+                                        : Colors.white),
+                              ),
                             )),
                       ),
                     ],
@@ -921,7 +953,7 @@ class _OrderViewDriverState extends State<OrderViewDriver> {
     });
   }
 
-  void _expansionChangedCallback(int index, bool newValue) {
+  void expansionChangedCallback(int index, bool newValue) {
     setState(() {
       cartshow = !cartshow;
     });

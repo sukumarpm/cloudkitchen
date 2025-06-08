@@ -197,6 +197,7 @@ class _DeliveryHomeState extends State<DeliveryHome> {
             print('str: $str');
 
             MyOrders orderhistory = MyOrders.fromJson(str);
+            Get.find<MyController>().ordercurrent = orderhistory;
             for (var element in orderhistory.items!) {
               cart.add(Cartlists(
                   title: element.title,
@@ -214,6 +215,8 @@ class _DeliveryHomeState extends State<DeliveryHome> {
         onError: (e) => print("Error completing: $e"),
       );
       Get.find<MyController>().fullcartList = cart;
+
+      print('c.ordercurrent: ${c.ordercurrent}');
     }
   }
 

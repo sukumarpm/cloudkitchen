@@ -69,20 +69,25 @@ class _UserProfileState extends State<UserProfile> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              ClipOval(
-                                child: SizedBox.fromSize(
-                                  size:
-                                      const Size.fromRadius(20), // Image radius
-                                  child: Image.asset(
-                                      'lib/assets/images/admin/icones/personal info.png',
-                                      fit: BoxFit.contain),
+                          GestureDetector(
+                            onTap: () {
+                              _navigationService.pushNamed('/userpersonalpage');
+                            },
+                            child: Row(
+                              children: [
+                                ClipOval(
+                                  child: SizedBox.fromSize(
+                                    size: const Size.fromRadius(
+                                        20), // Image radius
+                                    child: Image.asset(
+                                        'lib/assets/images/admin/icones/personal info.png',
+                                        fit: BoxFit.contain),
+                                  ),
                                 ),
-                              ),
-                              addHorizontalSpace(15),
-                              const Text('Personal Info'),
-                            ],
+                                addHorizontalSpace(15),
+                                const Text('Personal Info'),
+                              ],
+                            ),
                           ),
                           RotationTransition(
                             turns: const AlwaysStoppedAnimation(180 / 360),
@@ -141,7 +146,7 @@ class _UserProfileState extends State<UserProfile> {
                 addVerticalSpace(20),
                 Container(
                   color: const Color(0xffF6F8FA),
-                  height: 150,
+                  height: 60,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -182,37 +187,37 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              ClipOval(
-                                child: SizedBox.fromSize(
-                                  size:
-                                      const Size.fromRadius(20), // Image radius
-                                  child: Image.asset(
-                                      'lib/assets/images/admin/icones/Users Details.png',
-                                      fit: BoxFit.contain),
-                                ),
-                              ),
-                              addHorizontalSpace(15),
-                              const Text('User Details'),
-                            ],
-                          ),
-                          RotationTransition(
-                            turns: const AlwaysStoppedAnimation(180 / 360),
-                            child: ClipOval(
-                              child: SizedBox.fromSize(
-                                size: const Size.fromRadius(7), // Image radius
-                                child: Image.asset(
-                                    'lib/assets/images/user/icones/left arrow.png',
-                                    fit: BoxFit.contain),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     Row(
+                      //       children: [
+                      //         ClipOval(
+                      //           child: SizedBox.fromSize(
+                      //             size:
+                      //                 const Size.fromRadius(20), // Image radius
+                      //             child: Image.asset(
+                      //                 'lib/assets/images/admin/icones/Users Details.png',
+                      //                 fit: BoxFit.contain),
+                      //           ),
+                      //         ),
+                      //         addHorizontalSpace(15),
+                      //         const Text('User Details'),
+                      //       ],
+                      //     ),
+                      //     RotationTransition(
+                      //       turns: const AlwaysStoppedAnimation(180 / 360),
+                      //       child: ClipOval(
+                      //         child: SizedBox.fromSize(
+                      //           size: const Size.fromRadius(7), // Image radius
+                      //           child: Image.asset(
+                      //               'lib/assets/images/user/icones/left arrow.png',
+                      //               fit: BoxFit.contain),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // )
                     ],
                   ),
                 ),
@@ -320,10 +325,10 @@ class _UserProfileState extends State<UserProfile> {
                     ],
                   ),
                 ),
-                addVerticalSpace(20),
+                addVerticalSpace(120),
                 Container(
                   color: const Color(0xffF6F8FA),
-                  height: 100,
+                  height: 150,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

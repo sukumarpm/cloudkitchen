@@ -116,8 +116,7 @@ class _OrderActiveState extends State<OrderActive> {
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   SizedBox(
                                                     height: 130,
@@ -164,7 +163,7 @@ class _OrderActiveState extends State<OrderActive> {
                                                       ),
                                                     ),
                                                   ),
-                                                  // addVerticalSpace(10),
+                                                  addHorizontalSpace(10),
                                                   Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
@@ -193,86 +192,95 @@ class _OrderActiveState extends State<OrderActive> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          InputQty.double(
-                                                              messageBuilder:
-                                                                  (minVal,
-                                                                      maxVal,
-                                                                      value) {
-                                                                if (value! >
-                                                                    12) {
-                                                                  return const Text(
-                                                                    "Reach my limit",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .red),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                  );
-                                                                }
-                                                                return null;
-                                                              },
-                                                              onQtyChanged:
-                                                                  (val) {
-                                                                print(val);
-                                                                cartItem.qty =
-                                                                    val;
-                                                                setResults('');
-                                                              },
-                                                              maxVal: 12,
-                                                              initVal: cartItem
-                                                                  .qty!
-                                                                  .round(),
-                                                              minVal: 1,
-                                                              decoration: const QtyDecorationProps(
-                                                                  isBordered:
-                                                                      false,
-                                                                  btnColor: Colors
-                                                                      .black26,
-                                                                  iconColor:
-                                                                      Colors
-                                                                          .grey,
-                                                                  borderShape:
-                                                                      BorderShapeBtn
-                                                                          .circle,
-                                                                  width: 12)),
+                                                          Text(
+                                                              'Qty:${cartItem.qty!.round()}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          14.0)),
+                                                          // InputQty.double(
+                                                          //     messageBuilder:
+                                                          //         (minVal,
+                                                          //             maxVal,
+                                                          //             value) {
+                                                          //       if (value! >
+                                                          //           12) {
+                                                          //         return const Text(
+                                                          //           "Reach my limit",
+                                                          //           style: TextStyle(
+                                                          //               color: Colors
+                                                          //                   .red),
+                                                          //           textAlign:
+                                                          //               TextAlign
+                                                          //                   .center,
+                                                          //         );
+                                                          //       }
+                                                          //       return null;
+                                                          //     },
+                                                          //     // onQtyChanged:
+                                                          //     //     (val) {
+                                                          //     //   print(
+                                                          //     //       'va: $val');
+                                                          //     //   cartItem.qty =
+                                                          //     //       val;
+                                                          //     //   setResults('');
+                                                          //     // },
+                                                          //     onQtyChanged:
+                                                          //         (value) {},
+                                                          //     maxVal: 12,
+                                                          //     initVal: cartItem
+                                                          //         .qty!
+                                                          //         .round(),
+                                                          //     minVal: 1,
+                                                          //     decoration: const QtyDecorationProps(
+                                                          //         isBordered:
+                                                          //             false,
+                                                          //         btnColor: Colors
+                                                          //             .black26,
+                                                          //         iconColor:
+                                                          //             Colors
+                                                          //                 .grey,
+                                                          //         borderShape:
+                                                          //             BorderShapeBtn
+                                                          //                 .circle,
+                                                          //         width: 12)),
                                                         ],
                                                       ),
                                                     ],
                                                   ),
-                                                  Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      GestureDetector(
-                                                        child: Icon(
-                                                          Icons
-                                                              .delete_forever_rounded,
-                                                          size: 35,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .tertiary,
-                                                        ),
-                                                        onTap: () {
-                                                          setResults(
-                                                              cartItem.title!);
-                                                          showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return const AlertDialog(
-                                                                  title: Text(
-                                                                      'Info!'),
-                                                                  content: Text(
-                                                                      'Item has been removed from your cart.'),
-                                                                );
-                                                              });
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
+                                                  // Column(
+                                                  //   mainAxisAlignment:
+                                                  //       MainAxisAlignment.start,
+                                                  //   children: [
+                                                  //     GestureDetector(
+                                                  //       child: Icon(
+                                                  //         Icons
+                                                  //             .delete_forever_rounded,
+                                                  //         size: 35,
+                                                  //         color:
+                                                  //             Theme.of(context)
+                                                  //                 .colorScheme
+                                                  //                 .tertiary,
+                                                  //       ),
+                                                  //       onTap: () {
+                                                  //         setResults(
+                                                  //             cartItem.title!);
+                                                  //         showDialog(
+                                                  //             context: context,
+                                                  //             builder:
+                                                  //                 (BuildContext
+                                                  //                     context) {
+                                                  //               return const AlertDialog(
+                                                  //                 title: Text(
+                                                  //                     'Info!'),
+                                                  //                 content: Text(
+                                                  //                     'Item has been removed from your cart.'),
+                                                  //               );
+                                                  //             });
+                                                  //       },
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
                                                 ],
                                               ),
                                             ],
@@ -303,7 +311,7 @@ class _OrderActiveState extends State<OrderActive> {
                                               MainAxisAlignment.spaceAround,
                                           children: [
                                             Text(
-                                              'Amount(only food) Rs.$total',
+                                              'Amount(Tax Exclusive) Rs.$total',
                                               style: textTheme.labelLarge,
                                             ),
                                           ],
@@ -322,7 +330,7 @@ class _OrderActiveState extends State<OrderActive> {
                                         child: const Text("CHECK STATUS"),
                                         onPressed: () {
                                           _navigationService
-                                              .pushNamed("/ordersummary");
+                                              .pushNamed("/ordertracking");
                                         }),
                                   )
                                 ],

@@ -78,19 +78,19 @@ class _UserPersonalPageState extends State<UserPersonalPage> {
     _selectedIngredients = [];
     listCarts = c.fullcartList;
     listVendorSource = c.allvendordata;
-    late VendorSource vendorSource;
-    for (var element in listVendorSource) {
-      // if (element['active']) {
-      vendorSource = element;
-      if (kDebugMode) {
-        print('vendorSource.active: ${vendorSource.active}');
-        print('vendorSource.active: ${vendorSource.address}');
-        print('vendorSource.active: ${vendorSource.discount}');
-        print('vendorSource.active: ${vendorSource.location}');
-        print('vendorSource.active: ${vendorSource.name}');
-      }
-      // }
-    }
+    // late VendorSource vendorSource;
+    // for (var element in listVendorSource) {
+    //   // if (element['active']) {
+    //   vendorSource = element;
+    //   if (kDebugMode) {
+    //     print('vendorSource.active: ${vendorSource.active}');
+    //     print('vendorSource.active: ${vendorSource.address}');
+    //     print('vendorSource.active: ${vendorSource.discount}');
+    //     print('vendorSource.active: ${vendorSource.location}');
+    //     print('vendorSource.active: ${vendorSource.name}');
+    //   }
+    //   // }
+    // }
     getLocation();
     setResults('');
     List address = c.profiledata['my_addresses'];

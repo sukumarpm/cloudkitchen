@@ -4,6 +4,7 @@ class MyOrders {
   String? vendor;
   String? order_id;
   String? user_id;
+  String? driver_phone;
   double? total_amount;
 
   MyOrders(
@@ -11,6 +12,7 @@ class MyOrders {
       this.vendor,
       this.order_id,
       this.user_id,
+      this.driver_phone,
       this.items,
       this.total_amount});
 
@@ -25,6 +27,7 @@ class MyOrders {
     vendor = json['vendor'];
     order_id = json['order_id'];
     user_id = json['user_id'];
+    driver_phone = json['driver_phone'];
     total_amount = json['total_amount'].toDouble();
   }
 
@@ -37,6 +40,7 @@ class MyOrders {
     data['vendor'] = vendor;
     data['order_id'] = order_id;
     data['user_id'] = user_id;
+    data['driver_phone'] = driver_phone;
     data['total_amount'] = total_amount;
     return data;
   }

@@ -12,12 +12,15 @@ import 'package:cloud_kitchen_2/pages/forgot.dart';
 import 'package:cloud_kitchen_2/pages/gmap.dart';
 import 'package:cloud_kitchen_2/pages/gpay.dart';
 import 'package:cloud_kitchen_2/pages/home.dart';
+import 'package:cloud_kitchen_2/pages/livetracking.dart';
 import 'package:cloud_kitchen_2/pages/login.dart';
+import 'package:cloud_kitchen_2/pages/mydeliveries.dart';
 import 'package:cloud_kitchen_2/pages/onboard.dart';
 import 'package:cloud_kitchen_2/pages/orderactive.dart';
 import 'package:cloud_kitchen_2/pages/orderhistory.dart';
 import 'package:cloud_kitchen_2/pages/orderplaced.dart';
 import 'package:cloud_kitchen_2/pages/ordersummary.dart';
+import 'package:cloud_kitchen_2/pages/ordertracking.dart';
 import 'package:cloud_kitchen_2/pages/orderviewadmin.dart';
 import 'package:cloud_kitchen_2/pages/orderviewdriver.dart';
 import 'package:cloud_kitchen_2/pages/register.dart';
@@ -64,6 +67,9 @@ class NavigationService {
     "/addnewdriver": (context) => const AddNewDriver(),
     "/editdriver": (context) => const EditDriver(),
     "/searchuser": (context) => const SearchUser(),
+    "/mydeliveries": (context) => const MyDeliveries(),
+    "/ordertracking": (context) => const OrderTracking(),
+    "/livetracking": (context) => const LiveTracking(),
   };
 
   GlobalKey<NavigatorState>? get navigatorKey {

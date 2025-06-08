@@ -126,6 +126,7 @@ class AuthService {
       //print('user.email: ${user.email}');
       // const start = "quick";
       late String phone;
+      Map<dynamic, dynamic> userData;
       const end = "@";
 
       const startIndex = 0;
@@ -141,28 +142,80 @@ class AuthService {
           .collection("customers")
           .where("phone_number", isEqualTo: phone)
           .get();
+
       List<Object?> data = resulta.docs.map((e) {
         return e.data();
       }).toList();
+
+      // final List<DocumentSnapshot> documents = resulta.docs;
+      // if (documents.isNotEmpty) {
       if (data.isNotEmpty) {
-        Map<dynamic, dynamic> userData = data[0] as Map;
+        userData = data[0] as Map;
+
+        final QuerySnapshot resultb = await FirebaseFirestore.instance
+            .collection("admin")
+            .where("phone", isEqualTo: phone)
+            .get();
+
+        List<Object?> dataadmin = resultb.docs.map((e) {
+          return e.data();
+        }).toList();
+        // if (kDebugMode) {
+        //   print('dataadmin:$dataadmin');
+        // }
+        if (dataadmin.isNotEmpty) {
+          Map<dynamic, dynamic> adminData = dataadmin[0] as Map;
+          Get.find<MyController>().isAdmin = true.obs;
+          Get.find<MyController>().admindata = adminData;
+        }
+        final QuerySnapshot resultc = await FirebaseFirestore.instance
+            .collection("drivers")
+            .where("driverphone", isEqualTo: phone)
+            .get();
+
+        List<Object?> datadriver = resultc.docs.map((e) {
+          return e.data();
+        }).toList();
+        // if (kDebugMode) {
+        //   print('dataadmin:$dataadmin');
+        // }
+        if (datadriver.isNotEmpty) {
+          Map<dynamic, dynamic> driverData = datadriver[0] as Map;
+          Get.find<MyController>().isDriver = true.obs;
+          Get.find<MyController>().driverdata = driverData;
+        }
+
+        //get user
         Get.find<MyController>().profiledata = userData;
-        //print('phone: $userData');
-        // Get.snackbar('Welcome!. ', userData['name'] + '!',
-        //     barBlur: 1,
-        //     backgroundColor: Colors.white,
-        //     margin: const EdgeInsets.all(25.0),
-        //     duration: const Duration(seconds: 5),
-        //     snackPosition: SnackPosition.BOTTOM);
-        //   GetSnackBar(
-        //   title: 'Info',
-        //   message: userData['name'],
-        //   icon: const Icon(Icons.refresh),
-        //   duration: const Duration(seconds: 3),
-        // );
+        getfooddetails();
+        // if (isAdmin) {
+        //   _navigationService.pushNamed("/adminhome");
+        // } else if (isDriver) {
+        //   _navigationService.pushNamed("/driverhome");
+        // } else {
+        //   _navigationService.pushNamed("/home");
+        // }
       }
     } else {
       _user = null;
+    }
+  }
+
+  Future<void> getfooddetails() async {
+    final FirebaseFirestore firebase = FirebaseFirestore.instance;
+    final QuerySnapshot resulta =
+        await firebase.collection("fmstations").orderBy("free").get();
+
+    List<Object?> data = resulta.docs.map((e) {
+      return e.data();
+    }).toList();
+
+    if (data.isNotEmpty) {
+      Map<dynamic, dynamic> fooditems = data[0] as Map;
+      Get.find<MyController>().fooddata = fooditems;
+      if (kDebugMode) {
+        print('in main: $fooditems');
+      }
     }
   }
 }
